@@ -22,6 +22,14 @@ dbconntion();
 // cookie parser
 App.use(cookieParser());
 
+// import the routes
+import { router  } from "./router/user.router.js";
+// use the routes
+App.use("/api/user", router);
+// default router
+App.get("/", (req, res) => {
+  res.send("Welcome to the backend server");
+});
 
 App.listen(port,()=>{
   console.log("App is listin at the port ",port);

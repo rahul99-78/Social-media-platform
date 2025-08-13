@@ -1,61 +1,64 @@
 import { User } from "../models/user.model.js";
 
+const Signup = async (req, res) => {
+  try {
+    const { name, username, password, email } = req.body;
 
-const Signup = async(req,res)=>{
-  try{
-    // Validate request body
-    const {name,username,passowrd,email} = req.body;
-
-    // Check if all fields are provided
-    if(!name || !username || !passowrd || !email){
+    // 1. Validate required fields
+    if (!name || !username || !password || !email) {
       return res.status(400).json({
+        success: false,
         message: "All fields are required",
       });
     }
-    // Check if username is valid
-    const existingUser = await User.find({email: email });
 
-    if(existingUser.length > 0){
+    // 2. Check if user already exists by email
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({
-        message: "User already exists",
-      });
-    }
-    // existing user password hash check
-    const existingUsername = await User.find({username: username });
-
-    if(existingUsername.length > 0){
-      return res.status(400).json({
-        message: "Username already exists",
+        success: false,
+        message: "Email is already registered",
       });
     }
 
-    // hash the password
-    const hashedPassword = await bcrypt.hash(passowrd, 10);
-    // Create new user
+    // 3. Check if username is already taken
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({
+        success: false,
+        message: "Username is already taken",
+      });
+    }
+
+    // 4. Create new user (password will be hashed automatically by pre-save hook)
     const newUser = new User({
       name,
       username,
-      passowrd:hashedPassword, // Note: Consider hashing the password before saving
-      email
+      password, // Do NOT hash manually here since pre('save') already does it
+      email,
     });
+
     await newUser.save();
-    res.status(201).json({
+
+    // 5. Respond with success
+    return res.status(201).json({
       success: true,
-      message: "User created successfully",
+      message: "User registered successfully",
       user: {
         id: newUser._id,
         name: newUser.name,
         username: newUser.username,
-        email: newUser.email
-      }
+        email: newUser.email,
+      },
     });
+  } catch (error) {
+    console.error("Signup controller error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
+export { Signup };
 
-  }catch(error){
-      console.log("Signup conntoller error ");
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      })
-}
-}
