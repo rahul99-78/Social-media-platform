@@ -25,15 +25,10 @@ const Signup = () => {
       });
 
       const data = await response.json();
-      if (data.success) {
-
-        // Redirect to login or home page
-      } else {
-        alert(data.message);
-      }
+     console.log(data);
     } catch (error) {
       console.error('Error during signup:', error);
-      
+
     }
   }
   return (
