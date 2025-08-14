@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -24,7 +24,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+   },
 }, {
   timestamps: true  // automatically adds createdAt and updatedAt fields
 });
