@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -15,27 +15,35 @@ const Signup = () => {
       [name]: value
     });
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const postdata = async () => {
     try {
-      const response = await fetch('/api/user/signup', {
-
-        body: JSON.stringify(formData)
+      const response = await axios.post('/api/user/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        username: formData.username
       });
-
-      const data = await response.json();
-     console.log(data);
+      if (response.data.success) {
+        console.log('User created successfully:', response.data.user);
+        // Redirect or show success message
+      } else {
+        console.error('Signup failed:', response.data.message);
+        // Show error message to user
+      }
     } catch (error) {
       console.error('Error during signup:', error);
-
+      // Handle error, e.g., show error message to User
     }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await postdata();
   }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">Create Account</h2>
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="username">Username</label>
             <input
