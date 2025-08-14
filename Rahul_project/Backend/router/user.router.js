@@ -16,4 +16,14 @@ router.post("/signup-with-verification", SignupWithVerification);
 router.post("/singin", Singin);
 // Add more user-related routes here in the future
 
+
+
+
+
+
+// post routes
+import { createPost, getPosts, likePost } from "../controllers/post.controller.js";
+// Create a new post
+router.post("/post", createPost);
+
 export {router}

@@ -1,14 +1,32 @@
 import { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const postdata = async()=>{
+    try{
+        const response = await axios.post('/api/user/singin', {
+          email: email,
+          password: password
+        });
+       const data = response.data;
+       console.log(data);
+
+    }catch(error) {
+      console.error("Error during signup:", error);
+    }
+  }
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add your signup logic here
-    console.log("Email:", email, "Password:", password);
+    postdata();
   };
+
+
 
   return (
     <div className="flex items-center justify-center  ">
